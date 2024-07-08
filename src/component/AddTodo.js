@@ -1,3 +1,4 @@
+import Axios from "axios";
 import React, { Component } from "react";
 import { Button, TextField } from "@mui/material";
 import { DesktopDatePicker , LocalizationProvider} from '@mui/x-date-pickers';
@@ -39,14 +40,35 @@ class AddTodo extends Component {
   handleSubmit = (event) => {
     event.preventDefault();
     if (this.state.content.trim()) {
-      this.props.addTodo(this.state);
-      this.setState({
-        content: "",
-        date: "",
-        duedate: null
-      });
+      // this.props.addTodo(this.state);
+      // this.setState({
+      //   content: "",
+      //   date: "",
+      //   duedate: null
+
+      const jsonObject = {
+        id: this.state.id,
+        task: this.state.content,
+        currentDate: new Date().toISOString(),
+        dueDate: this.state.duedate
+     };
+
+      Axios({
+        method: "POST",
+        url: "http://localhost:8080/add/item",
+        data: {jsonObject},
+        headers: {
+           "Content-Type": "application/json"
+        }
+     }).then(res => {
+        console.log(res.data.message);
+     });
     }
+    
+    
   };
+
+
   render() {
     return (
       // 1. When rendering a component, you can render as many elements as you like as long as it is wrapped inside
